@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVI: Territorio y Ecosistema OSO - Enseña por Colombia</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configuración de Tailwind para colores institucionales -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        excBlue: {
+                            50: '#eef2f6',
+                            100: '#d5e0ec',
+                            500: '#3a6b9e',
+                            800: '#1e3a5f',
+                            900: '#0f243e', // Azul oscuro institucional
+                        },
+                        excYellow: {
+                            300: '#fef08a',
+                            400: '#facc15',
+                            500: '#eab308', // Dorado/Amarillo institucional
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome para Íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel para JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f1f5f9; 
+        }
+        
+        .sticky-tape {
+            background: rgba(24acc15, 0.3);
+            transform: rotate(-3deg);
+        }
+
+        .card-tilt {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-tilt:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .quiz-option {
+            transition: all 0.2s ease;
+        }
+
+        /* Animaciones */
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen flex items-center justify-center">
+    <div id="root" class="w-full max-w-6xl"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const ECOSYSTEM_DATA = {
+            title: "TERRITORIO Y ECOSISTEMA OSO",
+            stickyNote: {
+                text: "El ecosistema reúne a los actores. La OSO es una relación entre el territorio, la escuela y el sector productivo que puede ser transformadora, habilitadora y generadora de oportunidades para las trayectorias de vida de los jóvenes."
+            },
+            subtitle: "TRES PILARES DEL ECOSISTEMA OSO",
+            columns: [
+                {
+                    id: "formacion",
+                    title: "FORMACIÓN",
+                    desc: "La base pedagógica donde profesionales líderes (Ecos) y docentes se capacitan para guiar el proyecto de vida de los estudiantes.",
+                    tag: "ECOS Y FORMACIÓN",
+                    longDesc: "Desde Enseña por Colombia formamos y acompañamos a profesionales (Ecos) en liderazgo colectivo, cultura de aula y metodología OSO. Estos líderes asumen el reto con curiosidad y preparan el terreno escolar con herramientas sólidas.",
+                    details: {
+                        title: "Pilar 1: Ecos y Capacitación Docente",
+                        content: "La formación en OSO se estructura en 3 sesiones de 2 horas cada una y comunidades de aprendizaje para compartir retos a lo largo del año. Los Ecos reciben más de 800 horas de formación en liderazgo, pedagogía y gestión de aula, asegurando un acompañamiento asertivo a las juventudes.",
+                        icon: "fa-graduation-cap"
+                    }
+                },
+                {
+                    id: "implementacion",
+                    title: "IMPLEMENTACIÓN",
+                    desc: "Donde la vida ocurre. Las aulas se transforman en espacios de autoconocimiento, exploración formativa y planeación laboral.",
+                    tag: "AULAS E INSTITUCIONES",
+                    longDesc: "Los Ecos trasladan la metodología a las aulas para estudiantes de 9°, 10° y 11°. Las instituciones educativas se convierten en espacios de oportunidad donde las habilidades y sueños toman una ruta estructurada y real.",
+                    details: {
+                        title: "Pilar 2: La OSO en las Aulas",
+                        content: "Se implementan de manera directa cartillas adaptadas (Autoconocimiento, Formación y Trabajo) en más de 43 colegios del país. El proceso guía a los jóvenes a responder: ¿Quién soy?, ¿Qué quiero aprender? y ¿Qué quiero sumarle al mundo?.",
+                        icon: "fa-school"
+                    }
+                },
+                {
+                    id: "articulacion",
+                    title: "ARTICULACIÓN",
+                    desc: "Puentes hacia el sector productivo y oportunidades del contexto real, conectando el talento local con redes de valor.",
+                    tag: "ALIADOS Y TERRITORIOS",
+                    longDesc: "Conectamos la escuela con el sector productivo, empresas aliadas y entes territoriales a través de voluntariados, visitas guiadas, ferias de oportunidades (Caribe y Valle) y mesas de trabajo locales para la sostenibilidad de los proyectos.",
+                    details: {
+                        title: "Pilar 3: Alianzas y Oportunidades Posmedia",
+                        content: "Movilizamos voluntariados corporativos (Taller de sueños, Job Shadowing, Hoja de Vida) y Eventos de Oportunidades que reúnen a más de 40 organizaciones del sector público y privado para trazar rutas reales de tránsito posmedia.",
+                        icon: "fa-handshake"
+                    }
+                }
+            ],
+            quiz: [
+                {
+                    question: "¿Cuáles son las tres dimensiones o 'mundos' que aborda la metodología OSO?",
+                    options: [
+                        "Matemáticas, Ciencias y Lenguaje",
+                        "Autoconocimiento, Formación y Trabajo",
+                        "Familia, Amigos y Comunidad"
+                    ],
+                    correctIndex: 1,
+                    explanation: "La OSO articula intencionadamente el Autoconocimiento (Mundo 1), la Formación (Mundo 2) y el Trabajo (Mundo 3) para una toma de decisiones informada."
+                },
+                {
+                    question: "¿Cuál es el rol principal de los 'Ecos' en el ecosistema OSO?",
+                    options: [
+                        "Sustituir a los orientadores escolares permanentemente",
+                        "Ser profesionales líderes que actúan como mediadores educativos en las aulas",
+                        "Financiar económicamente las carreras universitarias de los estudiantes"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Los Ecos son profesionales del programa Lidera de Enseña por Colombia que actúan como mediadores educativos, adaptando e implementando la OSO en territorio."
+                },
+                {
+                    question: "¿Qué se busca con las estrategias de voluntariado como 'Job Shadowing' y el 'Taller de Sueños'?",
+                    options: [
+                        "Conectar la teoría de la OSO con la práctica real junto a aliados del sector productivo",
+                        "Evaluar académicamente a los estudiantes con notas tradicionales",
+                        "Reemplazar las horas de clase de los docentes titulares"
+                    ],
+                    correctIndex: 0,
+                    explanation: "Los voluntariados con aliados empresariales aterrizan las temáticas a la realidad, inspirando a los jóvenes a romper barreras y planificar su futuro."
+                }
+            ]
+        };
+
+        const App = () => {
+            const [selectedPillar, setSelectedPillar] = useState(null);
+            const [quizOpen, setQuizOpen] = useState(false);
+            const [quizIndex, setQuizIndex] = useState(0);
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+            const [score, setScore] = useState(0);
+            const [quizFinished, setQuizFinished] = useState(false);
+
+            const handleAnswerSelect = (index) => {
+                if (selectedAnswer !== null) return;
+                setSelectedAnswer(index);
+                if (index === ECOSYSTEM_DATA.quiz[quizIndex].correctIndex) {
+                    setScore(prev => prev + 1);
+                }
+            };
+
+            const handleNextQuestion = () => {
+                if (quizIndex < ECOSYSTEM_DATA.quiz.length - 1) {
+                    setSelectedAnswer(null);
+                    setQuizIndex(prev => prev + 1);
+                } else {
+                    setQuizFinished(true);
+                }
+            };
+
+            const resetQuiz = () => {
+                setQuizIndex(0);
+                setSelectedAnswer(null);
+                setScore(0);
+                setQuizFinished(false);
+                setQuizOpen(false);
+            };
+
+            return (
+                <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
+                    
+                    {}
+                    {/* Sección Superior: Título y Nota Adhesiva */}
+                    <div className="bg-excBlue-900 text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative">
+                        <div className="max-w-xl">
+                            <span className="text-excYellow-400 text-xs font-bold tracking-widest uppercase mb-1 block">
+                                Enseña por Colombia
+                            </span>
+                            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
+                                {ECOSYSTEM_DATA.title}
+                            </h1>
+                            <p className="text-slate-300 text-sm mt-2">
+                                Un tejido vivo para conectar las aspiraciones de las juventudes con las oportunidades del territorio.
+                            </p>
+                        </div>
+
+                        {/* Nota adhesiva / Sticky Note (Aesthetic de cinta/papel) */}
+                        <div className="relative bg-excYellow-300 text-excBlue-900 p-5 pt-7 rounded-lg shadow-lg max-w-sm rotate-1 border border-excYellow-400">
+                            {/* Cinta adhesiva simulada */}
+                            <div className="absolute -top-3 left-1/3 w-24 h-6 bg-white/70 backdrop-blur-sm -rotate-2 border-x border-slate-300/50"></div>
+                            <p className="text-xs font-semibold leading-relaxed">
+                                {ECOSYSTEM_DATA.stickyNote.text}
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Subtítulo central con destellos decorativos */}
+                    <div className="text-center py-8 bg-slate-50 border-b border-slate-100">
+                        <div className="inline-flex items-center gap-3">
+                            <span className="text-excYellow-500 font-bold text-lg">✦</span>
+                            <h2 className="text-lg md:text-xl font-extrabold text-excBlue-900 tracking-wide uppercase">
+                                {ECOSYSTEM_DATA.subtitle}
+                            </h2>
+                            <span className="text-excYellow-500 font-bold text-lg">✦</span>
+                        </div>
+                        <p className="text-xs text-slate-500 mt-1">Explora interactuando con cada tarjeta para conocer sus detalles</p>
+                    </div>
+
+                    {}
+                    {/* Tres Columnas Principales */}
+                    <div className="p-6 md:p-10 grid grid-cols-1 md:grid-cols-3 gap-8 bg-white">
+                        {ECOSYSTEM_DATA.columns.map((col) => (
+                            <div key={col.id} className="flex flex-col">
+                                
+                                {/* Tarjeta Interactiva */}
+                                <div 
+                                    onClick={() => setSelectedPillar(col)}
+                                    className="card-tilt cursor-pointer bg-slate-50 rounded-2xl border border-slate-200 p-6 flex flex-col items-center justify-between text-center min-h-[320px] relative overflow-hidden shadow-sm"
+                                >
+                                    <div className="absolute top-2 right-2 bg-excBlue-100 text-excBlue-900 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shadow-inner">
+                                        <i className="fas fa-plus"></i>
+                                    </div>
+
+                                    {/* Cabecera interna */}
+                                    <div className="w-full">
+                                        <h3 className="text-md font-extrabold text-excBlue-900 border-b pb-2 mb-3 border-slate-200 uppercase tracking-wider">
+                                            {col.title}
+                                        </h3>
+                                        <p className="text-xs text-slate-600 leading-relaxed px-2">
+                                            {col.desc}
+                                        </p>
+                                    </div>
+
+                                    {/* Ilustración / SVG personalizado */}
+                                    <div className="my-4 text-excBlue-900 opacity-90">
+                                        {col.id === 'formacion' && (
+                                            <svg className="w-24 h-24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="50" cy="50" r="40" fill="#eef2f6" />
+                                                <path d="M30 65 L50 35 L70 65 Z" fill="#0f243e" />
+                                                <circle cx="50" cy="35" r="8" fill="#eab308" />
+                                                <rect x="42" y="50" width="16" height="4" fill="#fef08a" />
+                                            </svg>
+                                        )}
+                                        {col.id === 'implementacion' && (
+                                            <svg className="w-24 h-24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="50" cy="50" r="40" fill="#eef2f6" />
+                                                <rect x="35" y="40" width="30" height="25" rx="4" fill="#0f243e" />
+                                                <path d="M30 40 L50 25 L70 40 Z" fill="#eab308" />
+                                                <circle cx="50" cy="52" r="5" fill="#ffffff" />
+                                            </svg>
+                                        )}
+                                        {col.id === 'articulacion' && (
+                                            <svg className="w-24 h-24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="50" cy="50" r="40" fill="#eef2f6" />
+                                                <circle cx="38" cy="50" r="14" stroke="#0f243e" strokeWidth="6" />
+                                                <circle cx="62" cy="50" r="14" stroke="#eab308" strokeWidth="6" />
+                                                <path d="M45 50 L55 50" stroke="#0f243e" strokeWidth="4" />
+                                            </svg>
+                                        )}
+                                    </div>
+
+                                    {/* Etiqueta inclinada / Tilted Tag (Réplica exacta de la estética del recurso modelo) */}
+                                    <div className="bg-excYellow-500 text-excBlue-900 text-[11px] font-black tracking-widest px-4 py-1.5 rounded rotate-2 shadow-sm border border-excYellow-400 mt-2 uppercase w-11/12 mx-auto">
+                                        {col.tag}
+                                    </div>
+                                </div>
+
+                                {/* Descripción extendida inferior */}
+                                <p className="text-xs text-slate-700 leading-relaxed text-center mt-5 px-3">
+                                    {col.longDesc}
+                                </p>
+
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Botón de Autoevaluación en la parte inferior */}
+                    <div className="bg-slate-50 p-6 text-center border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div className="text-left">
+                            <h4 className="text-sm font-bold text-excBlue-900">¿Listo para medir tus conocimientos?</h4>
+                            <p className="text-xs text-slate-500 mt-0.5">Participa en el Reto del Ecosistema OSO para validar tu comprensión</p>
+                        </div>
+                        <button 
+                            onClick={() => setQuizOpen(true)}
+                            className="bg-excBlue-900 hover:bg-excBlue-800 text-white font-bold text-xs uppercase tracking-widest px-6 py-3 rounded-xl transition duration-150 inline-flex items-center gap-2 shadow-md hover:shadow-lg"
+                        >
+                            <i className="fas fa-gamepad"></i> Comenzar Reto OSO
+                        </button>
+                    </div>
+
+                    {}
+                    {/* Modal Detallado de Pilar */}
+                    {selectedPillar && (
+                        <div className="fixed inset-0 bg-excBlue-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 fade-in">
+                            <div className="bg-white rounded-3xl p-6 md:p-8 max-w-lg w-full relative shadow-2xl border border-slate-100">
+                                <button 
+                                    onClick={() => setSelectedPillar(null)} 
+                                    className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition"
+                                >
+                                    <i className="fas fa-times text-xl"></i>
+                                </button>
+                                
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="w-12 h-12 rounded-2xl bg-excBlue-50 flex items-center justify-center text-excBlue-900 text-xl shadow-inner border border-excBlue-100">
+                                        <i className={`fas ${selectedPillar.details.icon}`}></i>
+                                    </div>
+                                    <h2 className="text-xl font-extrabold text-excBlue-900">
+                                        {selectedPillar.details.title}
+                                    </h2>
+                                </div>
+
+                                <p className="text-sm text-slate-600 leading-relaxed mb-6">
+                                    {selectedPillar.details.content}
+                                </p>
+
+                                <div className="bg-excBlue-50 p-4 rounded-2xl border border-excBlue-100 flex items-start gap-3">
+                                    <i className="fas fa-circle-info text-excBlue-500 mt-0.5"></i>
+                                    <p className="text-[11px] text-excBlue-800 italic leading-relaxed">
+                                        <strong>Recuerda:</strong> El éxito en la OSO radica en movilizar a las comunidades locales, no en dictar clases magistrales desconectadas del territorio.
+                                    </p>
+                                </div>
+
+                                <div className="mt-6 flex justify-end">
+                                    <button 
+                                        onClick={() => setSelectedPillar(null)}
+                                        className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl transition"
+                                    >
+                                        Cerrar Vista
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {}
+                    {/* Modal o Panel del Quiz Interactivo */}
+                    {quizOpen && (
+                        <div className="fixed inset-0 bg-excBlue-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 fade-in">
+                            <div className="bg-white rounded-3xl p-6 md:p-8 max-w-xl w-full relative shadow-2xl border border-slate-100">
+                                
+                                <button 
+                                    onClick={resetQuiz} 
+                                    className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition"
+                                >
+                                    <i className="fas fa-times text-xl"></i>
+                                </button>
+
+                                {!quizFinished ? (
+                                    <div key={quizIndex} className="fade-in">
+                                        <span className="bg-excBlue-100 text-excBlue-900 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3 inline-block">
+                                            Pregunta {quizIndex + 1} de {ECOSYSTEM_DATA.quiz.length}
+                                        </span>
+                                        <h3 className="text-md md:text-lg font-bold text-excBlue-900 mb-6 leading-snug">
+                                            {ECOSYSTEM_DATA.quiz[quizIndex].question}
+                                        </h3>
+
+                                        <div className="space-y-3">
+                                            {ECOSYSTEM_DATA.quiz[quizIndex].options.map((opt, i) => {
+                                                let optionClass = "border-slate-200 hover:border-slate-400 hover:bg-slate-50";
+                                                
+                                                if (selectedAnswer !== null) {
+                                                    if (i === ECOSYSTEM_DATA.quiz[quizIndex].correctIndex) {
+                                                        optionClass = "border-emerald-500 bg-emerald-50 text-emerald-900 font-semibold ring-2 ring-emerald-100";
+                                                    } else if (selectedAnswer === i) {
+                                                        optionClass = "border-rose-500 bg-rose-50 text-rose-900 ring-2 ring-rose-100";
+                                                    } else {
+                                                        optionClass = "border-slate-100 opacity-60";
+                                                    }
+                                                }
+
+                                                return (
+                                                    <button
+                                                        key={i}
+                                                        onClick={() => handleAnswerSelect(i)}
+                                                        disabled={selectedAnswer !== null}
+                                                        className={`w-full text-left p-4 rounded-xl border-2 text-xs md:text-sm transition-all flex items-start gap-3 ${optionClass}`}
+                                                    >
+                                                        <span className="w-5 h-5 rounded-full border border-slate-300 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 bg-white">
+                                                            {String.fromCharCode(65 + i)}
+                                                        </span>
+                                                        <span>{opt}</span>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+
+                                        {selectedAnswer !== null && (
+                                            <div className="mt-6 bg-slate-50 border border-slate-200 rounded-2xl p-4 fade-in">
+                                                <div className="flex items-center gap-2 mb-1.5">
+                                                    {selectedAnswer === ECOSYSTEM_DATA.quiz[quizIndex].correctIndex ? (
+                                                        <span className="text-emerald-600 font-bold text-sm inline-flex items-center gap-1">
+                                                            <i className="fas fa-check-circle"></i> ¡Excelente!
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-rose-600 font-bold text-sm inline-flex items-center gap-1">
+                                                            <i className="fas fa-times-circle"></i> Incorrecto
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <p className="text-xs text-slate-600 leading-relaxed mb-4">
+                                                    {ECOSYSTEM_DATA.quiz[quizIndex].explanation}
+                                                </p>
+                                                <div className="flex justify-end">
+                                                    <button
+                                                        onClick={handleNextQuestion}
+                                                        className="bg-excBlue-900 hover:bg-excBlue-800 text-white font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl transition"
+                                                    >
+                                                        {quizIndex < ECOSYSTEM_DATA.quiz.length - 1 ? "Siguiente" : "Ver Resultados"}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-6 fade-in">
+                                        <div className="text-5xl mb-4">
+                                            {score === ECOSYSTEM_DATA.quiz.length ? "🏆" : "🎯"}
+                                        </div>
+                                        <h3 className="text-xl font-bold text-excBlue-900 mb-2">
+                                            ¡Reto Completado!
+                                        </h3>
+                                        <p className="text-sm text-slate-600 mb-6">
+                                            Tu resultado: <span className="font-bold text-excBlue-900">{score} de {ECOSYSTEM_DATA.quiz.length}</span> respuestas correctas.
+                                        </p>
+                                        <div className="bg-slate-50 border border-slate-200 p-4 rounded-2xl max-w-sm mx-auto mb-6 text-xs text-slate-600 leading-relaxed">
+                                            {score === ECOSYSTEM_DATA.quiz.length 
+                                                ? "¡Increíble! Conoces a profundidad el ecosistema y la metodología en cascada." 
+                                                : "Buen intento. Puedes volver a explorar el material interactivo para afianzar conceptos."}
+                                        </div>
+                                        <div className="flex justify-center gap-3">
+                                            <button
+                                                onClick={resetQuiz}
+                                                className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl transition"
+                                            >
+                                                Salir del Reto
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setQuizIndex(0);
+                                                    setSelectedAnswer(null);
+                                                    setScore(0);
+                                                    setQuizFinished(false);
+                                                }}
+                                                className="bg-excBlue-900 hover:bg-excBlue-800 text-white font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl transition"
+                                            >
+                                                Reiniciar
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
